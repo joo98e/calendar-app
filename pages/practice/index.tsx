@@ -2,7 +2,9 @@ import styled from "@emotion/styled";
 import moment from "moment";
 import Calendar from "../../components/Calendar/organisms/Calendar";
 
-const Container = styled.div``;
+const Container = styled.div`
+  min-height: 500px;
+`;
 
 interface Props {}
 
@@ -11,9 +13,9 @@ const PracticePage = ({}: Props) => {
 
   return (
     <Container>
+      <div style={{ marginTop: "200px" }} />
       <Calendar />
     </Container>
   );
 };
-
 export default PracticePage;
