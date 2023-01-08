@@ -1,6 +1,4 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import moment, { Moment } from "moment";
 import useCalendar from "../hooks/useCalendar";
 import { GetWeeksInfoResult } from "../hooks/types";
 
@@ -24,12 +22,22 @@ const CalendarBody = styled.div`
   gap: 0.5rem;
 `;
 
-const CalendarWeek = styled.div`
-  display: flex;
+const CalendarBodyRowBase = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.5rem;
 `;
 
-const CalendarDay = styled.div``;
+const CalendarBodyHeader = styled(CalendarBodyRowBase)`
+  text-align: left;
+  background: darkslategray;
+`;
+
+const CalendarWeek = styled(CalendarBodyRowBase)``;
+
+const CalendarDay = styled.div`
+  height: 128px;
+`;
 
 const Paragraph = styled.p`
   display: flex;
@@ -46,21 +54,23 @@ const Button = styled.button`
 interface Props {}
 
 const Calendar = ({}: Props) => {
-  const { getMoment, getFormat, setMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth } = useCalendar();
+  const { getMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth } = useCalendar();
 
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
 
   return (
     <Container>
       <CalendarHeader>
-        <Button>이전 달</Button>
+        <Button onClick={handleClickPrevMonth}>이전 달</Button>
         <Paragraph>{getMoment.format("YYYY년 MM월")}</Paragraph>
-        <Button>다음 달</Button>
+        <Button onClick={handleClickNextMonth}>다음 달</Button>
       </CalendarHeader>
       <CalendarBody>
-        {["일", "월", "화", "수", "목", "금", "토"].map((dddd, index) => (
-          <Paragraph key={index}>{dddd}</Paragraph>
-        ))}
+        <CalendarBodyHeader>
+          {["일", "월", "화", "수", "목", "금", "토"].map((dddd, index) => (
+            <Paragraph key={index}>{dddd}</Paragraph>
+          ))}
+        </CalendarBodyHeader>
 
         {weeksInfo.weeks.map((weeks, index) => {
           return (

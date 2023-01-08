@@ -39,9 +39,13 @@ export default function useCalendar() {
     return result;
   }
 
-  function handleClickPrevMonth() {}
+  function handleClickPrevMonth() {
+    setMoment(getMoment.clone().subtract(1, "month"));
+  }
 
-  function handleClickNextMonth() {}
+  function handleClickNextMonth() {
+    setMoment(getMoment.clone().add(1, "month"));
+  }
 
   return {
     getMoment: getMoment,
