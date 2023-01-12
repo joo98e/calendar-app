@@ -13,9 +13,12 @@ export default function useCalendar() {
   }
 
   function getWeeksInfo(): GetWeeksInfoResult {
+    const currentYear = getMoment.year();
+    const currentMonth = getMoment.month() + 1;
+
     const result: GetWeeksInfoResult = {
-      currentYear: getMoment.year(),
-      currentMonth: getMoment.month() + 1,
+      currentYear: currentYear,
+      currentMonth: currentMonth,
       weeks: [],
     };
 
@@ -27,9 +30,12 @@ export default function useCalendar() {
         .fill(0)
         .map((data, index) => {
           const days = getMoment.clone().startOf("year").week(currentWeekNum).startOf("week").add(index, "day");
+          const daysMonth = Number(days.month() + 1);
+
           return {
             d: days.format("dddd"),
             D: Number(days.format("D")),
+            thisMonthIs: currentMonth === daysMonth ? "CURRENT" : currentMonth > daysMonth ? "PREV" : "NEXT",
           };
         });
 

@@ -13,7 +13,7 @@ const PracticePage = ({}: Props) => {
 
   return (
     <Container>
-      <div style={{ marginTop: "200px" }} />
+      <div style={{ marginTop: "100px" }} />
       <Calendar />
     </Container>
   );
