@@ -1,12 +1,5 @@
-import styled from "@emotion/styled";
-import { Drawer, Space } from "antd";
+import { Drawer } from "antd";
 import React, { Dispatch, SetStateAction } from "react";
-
-const Button = styled.button`
-  padding: 0.5rem 1rem;
-  box-sizing: border-box;
-  cursor: pointer;
-`;
 
 interface Props {
   drawerTitle: string;
@@ -19,12 +12,7 @@ interface Props {
   width?: number;
 }
 
-const CustomDrawer = ({ children, onClose, drawerTitle, width = 720, open, setOpen }: Props) => {
-  function _onClose() {
-    setOpen(false);
-    onClose && onClose();
-  }
-
+const CustomDrawer = ({ children, onClose, drawerTitle, width = 720, open }: Props) => {
   return (
     <Drawer
       title={drawerTitle}
@@ -32,12 +20,7 @@ const CustomDrawer = ({ children, onClose, drawerTitle, width = 720, open, setOp
       open={open}
       onClose={onClose}
       bodyStyle={{ paddingBottom: 80 }}
-      extra={
-        <Space>
-          <Button onClick={_onClose}>취소</Button>
-          <Button onClick={_onClose}>저장</Button>
-        </Space>
-      }
+      extra={<></>}
     >
       {children}
     </Drawer>

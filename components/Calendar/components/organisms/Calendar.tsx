@@ -116,7 +116,9 @@ const Calendar = ({}: Props) => {
                   <CalendarDay
                     key={day.D}
                     thisMonthIs={day.thisMonthIs}
-                    onClick={() => setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`)}
+                    onClick={() => {
+                      setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`);
+                    }}
                   >
                     {day.D}
                   </CalendarDay>

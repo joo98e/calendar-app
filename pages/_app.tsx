@@ -1,16 +1,17 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "@store/index";
-import Head from "next/head";
+import "../styles/globals.css";
+import "antd/dist/reset.css";
+import { ConfigProvider } from "antd";
+import ko_KR from "antd/lib/locale/ko_KR";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Provider store={store}>
-      <Head>
-        <title>Calendar App</title>
-      </Head>
-      <Component {...pageProps} />
-    </Provider>
+    <ConfigProvider locale={ko_KR}>
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
+    </ConfigProvider>
   );
 }
