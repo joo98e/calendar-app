@@ -26,6 +26,9 @@
       ],
       "@components/*": [
         "components/*"
+      ],
+      "@atoms/*": [
+        "components/common/atoms/*"
       ]
     }
   },

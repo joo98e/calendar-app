@@ -6,8 +6,8 @@ import { Button, DatePicker, Input } from "antd";
 import { ActionAddScheduleRequest } from "@store/slice/Calendar.slice.type";
 import { RangePickerProps } from "antd/es/date-picker";
 import { css } from "@emotion/react";
-import { Flex } from "@components/common/atoms/Flex";
-import Typography from "@components/common/atoms/Typography";
+import { Flex, FlexColumn } from "@atoms/Flex";
+import Typography from "@atoms/Typography";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -23,7 +23,6 @@ const FormRow = styled.div<{
 }>`
   display: grid;
   grid-template-columns: 1fr 4fr;
-  align-items: center;
   margin: 1rem 0;
 
   ${(props) =>
@@ -38,6 +37,7 @@ const FormRow = styled.div<{
 `;
 
 const Label = styled.label`
+  margin-top: 0.3rem;
   font-size: 0.9rem;
   color: #333333;
 `;
@@ -53,6 +53,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
     handleSubmit,
     setValue,
     control,
+    clearErrors,
     formState: { errors },
   } = useForm<ActionAddScheduleRequest>();
 
@@ -67,6 +68,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
         const endDate = scheduleDays[1]!.format("YYYY-MM-DD");
         setValue("date.startDate", startDate);
         setValue("date.endDate", endDate);
+        clearErrors("date");
       }
     } catch (e) {}
   }
@@ -93,7 +95,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
         <FormContainer>
           <FormRow>
             <Label>일정 제목</Label>
-            <div>
+            <FlexColumn gap={1}>
               <Controller
                 name="title"
                 control={control}
@@ -103,12 +105,12 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
                 render={({ field: { onChange, value } }) => <Input onChange={onChange} value={value} />}
               />
               {errors?.title?.message && <Typography variant={"error"}>{errors?.title?.message}</Typography>}
-            </div>
+            </FlexColumn>
           </FormRow>
 
           <FormRow>
             <Label>일정 선택</Label>
-            <div>
+            <FlexColumn gap={1}>
               <Controller
                 name="date"
                 control={control}
@@ -118,12 +120,12 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
                 render={() => <RangePicker format="YYYY-MM-DD" onChange={onChangeScheduleRange} />}
               />
               {errors?.date?.message && <Typography variant={"error"}>{errors?.date?.message}</Typography>}
-            </div>
+            </FlexColumn>
           </FormRow>
 
           <FormRow>
             <Label>일정 설명</Label>
-            <Flex>
+            <FlexColumn gap={1}>
               <Controller
                 name="description"
                 control={control}
@@ -135,7 +137,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
               {errors?.description?.message && (
                 <Typography variant={"error"}>{errors?.description?.message}</Typography>
               )}
-            </Flex>
+            </FlexColumn>
           </FormRow>
 
           <FormRow isNotGrid>
