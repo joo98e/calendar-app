@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
-import useCalendar from "../hooks/useCalendar";
-import { GetWeeksInfoResult, ThisMonthIs } from "../hooks/types";
-import { css } from "@emotion/react";
 import React, { useState } from "react";
-import { Drawer, Space } from "antd";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import useCalendar from "@components/Calendar/hooks/useCalendar";
+import { GetWeeksInfoResult, MonthIs } from "@components/Calendar/hooks/types";
+import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms/CalendarScheduleAddDrawer";
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +45,7 @@ const CalendarBodyHeader = styled(CalendarBodyRowBase)`
 const CalendarWeek = styled(CalendarBodyRowBase)``;
 
 const CalendarDay = styled.div<{
-  thisMonthIs: ThisMonthIs;
+  thisMonthIs: MonthIs;
 }>`
   position: relative;
   height: 128px;
@@ -57,19 +57,20 @@ const CalendarDay = styled.div<{
   transition: all 0.15s ease;
   cursor: pointer;
   background: #fff;
+  user-select: none;
 
   &:hover {
     background: #f1f1f1;
   }
 
-  ${(props) => props.thisMonthIs === "CURRENT" && css``};
+  ${(props) => props.thisMonthIs === "This" && css``};
   ${(props) =>
-    props.thisMonthIs === "PREV" &&
+    props.thisMonthIs === "Last" &&
     css`
       color: #989898;
     `};
   ${(props) =>
-    props.thisMonthIs === "NEXT" &&
+    props.thisMonthIs === "Next" &&
     css`
       color: #989898;
     `};
@@ -88,14 +89,10 @@ const Button = styled.button`
 interface Props {}
 
 const Calendar = ({}: Props) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [drawerTitle, setDrawerTitle] = useState<string>("");
+
   const { getMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth } = useCalendar();
-
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
-
-  function onClose() {
-    setOpen(false);
-  }
 
   return (
     <Container>
@@ -116,7 +113,11 @@ const Calendar = ({}: Props) => {
             <CalendarWeek key={index}>
               {weeks.map((day) => {
                 return (
-                  <CalendarDay key={day.D} thisMonthIs={day.thisMonthIs} onClick={() => setOpen(true)}>
+                  <CalendarDay
+                    key={day.D}
+                    thisMonthIs={day.thisMonthIs}
+                    onClick={() => setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`)}
+                  >
                     {day.D}
                   </CalendarDay>
                 );
@@ -126,19 +127,7 @@ const Calendar = ({}: Props) => {
         })}
       </CalendarBody>
 
-      <Drawer
-        title="Create a new account"
-        width={720}
-        onClose={onClose}
-        open={open}
-        bodyStyle={{ paddingBottom: 80 }}
-        extra={
-          <Space>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button onClick={onClose}>Submit</Button>
-          </Space>
-        }
-      ></Drawer>
+      <CalendarScheduleAddDrawer title={drawerTitle} />
     </Container>
   );
 };

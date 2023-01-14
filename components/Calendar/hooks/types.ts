@@ -9,7 +9,7 @@ export type WeeksInfo = DayInfo[];
 interface DayInfo {
   d: string;
   D: number;
-  thisMonthIs: ThisMonthIs;
+  thisMonthIs: MonthIs;
 }
 
-export type ThisMonthIs = "PREV" | "CURRENT" | "NEXT";
+export type MonthIs = "Last" | "This" | "Next";

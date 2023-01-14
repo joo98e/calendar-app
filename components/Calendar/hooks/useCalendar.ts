@@ -8,7 +8,7 @@ moment.locale("ko");
 export default function useCalendar() {
   const [getMoment, setMoment] = useState<Moment>(moment());
 
-  function getFormat(format: string) {
+  function dateFormat(format: string) {
     return getMoment.format(format);
   }
 
@@ -35,7 +35,7 @@ export default function useCalendar() {
           return {
             d: days.format("dddd"),
             D: Number(days.format("D")),
-            thisMonthIs: currentMonth === daysMonth ? "CURRENT" : currentMonth > daysMonth ? "PREV" : "NEXT",
+            thisMonthIs: currentMonth === daysMonth ? "This" : currentMonth > daysMonth ? "Last" : "Next",
           };
         });
 
@@ -56,7 +56,7 @@ export default function useCalendar() {
   return {
     getMoment: getMoment,
     setMoment: setMoment,
-    getFormat: getFormat,
+    getFormat: dateFormat,
     getWeeksInfo: getWeeksInfo,
     handleClickPrevMonth: handleClickPrevMonth,
     handleClickNextMonth: handleClickNextMonth,
