@@ -1,3 +1,5 @@
+import { DatePeriod } from "@components/common/global/types/global";
+
 export type SliceCalendarState = {
   title: string;
   description: string;
@@ -14,6 +16,5 @@ type MonthKey = (typeof monthKey)[number];
 interface Schedule {
   title: string;
   description: string;
-  startDate: string;
-  endDate?: string;
+  date: DatePeriod;
 }

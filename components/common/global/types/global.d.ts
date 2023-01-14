@@ -5,3 +5,8 @@ type NumberStringFourDigit = `${SingleNumberString}${SingleNumberString}${Single
 export type YYYY = NumberStringFourDigit;
 export type MM = NumberStringTwoDigit;
 export type DD = NumberStringTwoDigit;
+
+export type DatePeriod = {
+  startDate?: string;
+  endDate?: string;
+};

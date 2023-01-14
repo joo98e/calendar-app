@@ -4,7 +4,7 @@ interface Props {
   title: string;
 }
 
-const SeoHeadCalendarPage = ({ title }: Props) => {
+const HeadForCalendarPage = ({ title }: Props) => {
   return (
     <Head>
       <title>{title}</title>
@@ -12,4 +12,4 @@ const SeoHeadCalendarPage = ({ title }: Props) => {
   );
 };
 
-export default SeoHeadCalendarPage;
+export default HeadForCalendarPage;

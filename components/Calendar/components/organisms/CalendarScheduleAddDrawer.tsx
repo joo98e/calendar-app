@@ -6,8 +6,10 @@ import { Button, DatePicker, Input } from "antd";
 import { ActionAddScheduleRequest } from "@store/slice/Calendar.slice.type";
 import { RangePickerProps } from "antd/es/date-picker";
 import { css } from "@emotion/react";
-import { Flex } from "@components/common/global/components/Flex";
+import { Flex } from "@components/common/atoms/Flex";
+import Typography from "@components/common/atoms/Typography";
 
+const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const Container = styled.div``;
@@ -47,7 +49,12 @@ interface Props {
 const CalendarScheduleAddDrawer = ({ title }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { handleSubmit, setValue, control } = useForm<ActionAddScheduleRequest>();
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<ActionAddScheduleRequest>();
 
   function onDrawerClose() {
     setOpen(false);
@@ -58,8 +65,8 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
       if (scheduleDays && Array.isArray(scheduleDays) && scheduleDays.every((day) => typeof day === "object")) {
         const startDate = scheduleDays[0]!.format("YYYY-MM-DD");
         const endDate = scheduleDays[1]!.format("YYYY-MM-DD");
-        setValue("startDate", startDate);
-        setValue("endDate", endDate);
+        setValue("date.startDate", startDate);
+        setValue("date.endDate", endDate);
       }
     } catch (e) {}
   }
@@ -86,26 +93,49 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
         <FormContainer>
           <FormRow>
             <Label>일정 제목</Label>
-            <Controller
-              name="title"
-              control={control}
-              render={({ field: { onChange, value } }) => <Input onChange={onChange} value={value} />}
-            />
+            <div>
+              <Controller
+                name="title"
+                control={control}
+                rules={{
+                  required: "일정 제목을 입력하세요.",
+                }}
+                render={({ field: { onChange, value } }) => <Input onChange={onChange} value={value} />}
+              />
+              {errors?.title?.message && <Typography variant={"error"}>{errors?.title?.message}</Typography>}
+            </div>
           </FormRow>
 
           <FormRow>
             <Label>일정 선택</Label>
-            <RangePicker format="YYYY-MM-DD" onChange={onChangeScheduleRange} />
+            <div>
+              <Controller
+                name="date"
+                control={control}
+                rules={{
+                  required: "일정을 입력하세요.",
+                }}
+                render={() => <RangePicker format="YYYY-MM-DD" onChange={onChangeScheduleRange} />}
+              />
+              {errors?.date?.message && <Typography variant={"error"}>{errors?.date?.message}</Typography>}
+            </div>
           </FormRow>
 
           <FormRow>
             <Label>일정 설명</Label>
-
-            <Controller
-              name="description"
-              control={control}
-              render={({ field: { onChange, value } }) => <Input.TextArea onChange={onChange} value={value} />}
-            />
+            <Flex>
+              <Controller
+                name="description"
+                control={control}
+                rules={{
+                  required: "일정 설명을 입력하세요.",
+                }}
+                render={({ field: { onChange, value } }) => <TextArea onChange={onChange} value={value} />}
+              />
+              {errors?.description?.message && (
+                <Typography variant={"error"}>{errors?.description?.message}</Typography>
+              )}
+            </Flex>
           </FormRow>
 
           <FormRow isNotGrid>
