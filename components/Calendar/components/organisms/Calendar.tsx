@@ -4,6 +4,8 @@ import { css } from "@emotion/react";
 import useCalendar from "@components/Calendar/hooks/useCalendar";
 import { GetWeeksInfoResult, MonthIs } from "@components/Calendar/hooks/types";
 import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms/CalendarScheduleAddDrawer";
+import { useAppSelector } from "@store/index";
+import Typography from "@atoms/Typography";
 
 const Container = styled.div`
   display: flex;
@@ -90,15 +92,17 @@ interface Props {}
 
 const Calendar = ({}: Props) => {
   const [drawerTitle, setDrawerTitle] = useState<string>("");
+  const { schedules } = useAppSelector((state) => state.calendarState);
 
-  const { getMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth } = useCalendar();
+  const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } =
+    useCalendar();
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
 
   return (
     <Container>
       <CalendarHeader>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
-        <Paragraph>{getMoment.format("YYYY년 MM월")}</Paragraph>
+        <Paragraph>{currentMoment.format("YYYY년 MM월")}</Paragraph>
         <Button onClick={handleClickNextMonth}>다음 달</Button>
       </CalendarHeader>
       <CalendarBody>
@@ -112,6 +116,12 @@ const Calendar = ({}: Props) => {
           return (
             <CalendarWeek key={index}>
               {weeks.map((day) => {
+                console.log(
+                  getTodayScheduleArray(
+                    new Date(`${weeksInfo.currentYear}-${weeksInfo.currentMonth}-${day.D}`),
+                    schedules
+                  )
+                );
                 return (
                   <CalendarDay
                     key={day.D}
@@ -120,7 +130,8 @@ const Calendar = ({}: Props) => {
                       setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`);
                     }}
                   >
-                    {day.D}
+                    <Typography size={"1rem"}>{day.D}</Typography>
+                    {}
                   </CalendarDay>
                 );
               })}

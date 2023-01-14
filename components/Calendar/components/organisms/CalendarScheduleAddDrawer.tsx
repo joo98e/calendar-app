@@ -3,11 +3,13 @@ import CustomDrawer from "@components/common/drawer/CustomDrawer";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, DatePicker, Input } from "antd";
-import { ActionAddScheduleRequest } from "@store/slice/Calendar.slice.type";
 import { RangePickerProps } from "antd/es/date-picker";
 import { css } from "@emotion/react";
 import { Flex, FlexColumn } from "@atoms/Flex";
 import Typography from "@atoms/Typography";
+import { useAppDispatch } from "@store/index";
+import { CalendarActions } from "@store/slice/Calendar.slice";
+import { DispatchActionAddSchedule } from "@store/slice/Calendar.slice.types";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -48,6 +50,7 @@ interface Props {
 
 const CalendarScheduleAddDrawer = ({ title }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const {
     handleSubmit,
@@ -55,7 +58,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
     control,
     clearErrors,
     formState: { errors },
-  } = useForm<ActionAddScheduleRequest>();
+  } = useForm<DispatchActionAddSchedule>();
 
   function onDrawerClose() {
     setOpen(false);
@@ -73,8 +76,8 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
     } catch (e) {}
   }
 
-  function onValid(data: ActionAddScheduleRequest) {
-    console.log(data);
+  function onValid(data: DispatchActionAddSchedule) {
+    dispatch(CalendarActions.addSchedule(data));
   }
 
   useEffect(() => {

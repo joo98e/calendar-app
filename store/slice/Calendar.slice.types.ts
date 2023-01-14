@@ -1,19 +1,18 @@
-import { DatePeriod } from "@components/common/global/types/global";
+import { DatePeriod, YYYY, MM, DD } from "@components/common/global/types/global";
 
 export type SliceCalendarState = {
   title: string;
   description: string;
-  schedule: {
-    [key in MonthKey]: Schedule[];
-  };
+  schedules: Schedule[];
 };
 
-export interface ActionAddScheduleRequest extends Schedule {}
+export interface DispatchActionAddSchedule extends Omit<Schedule, "uuid"> {}
 
 const monthKey = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"] as const;
 type MonthKey = (typeof monthKey)[number];
 
-interface Schedule {
+export interface Schedule {
+  uuid: string;
   title: string;
   description: string;
   date: DatePeriod;

@@ -35,7 +35,7 @@ type Variant = "plain" | "accent" | "desc" | "error";
 interface Props {
   variant?: Variant;
   size?: string;
-  children: string | JSX.Element;
+  children: string | number | JSX.Element;
 }
 
 const Typography = ({ variant = "plain", size = "0.8rem", children }: Props) => {

@@ -1,33 +1,37 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ActionAddScheduleRequest, SliceCalendarState } from "@store/slice/Calendar.slice.type";
+import uuid from "react-uuid";
+import { DispatchActionAddSchedule, SliceCalendarState } from "@store/slice/Calendar.slice.types";
 
 const initialState: SliceCalendarState = {
   title: "",
   description: "",
-  schedule: {
-    "1": [],
-    "2": [],
-    "3": [],
-    "4": [],
-    "5": [],
-    "6": [],
-    "7": [],
-    "8": [],
-    "9": [],
-    "10": [],
-    "11": [],
-    "12": [],
-  },
+  schedules: [
+    {
+      uuid: "123",
+      title: " test",
+      description: "test",
+      date: {
+        startDate: "2023-01-14",
+        endDate: "2023-01-16",
+      },
+    },
+  ],
 };
 
 const slice = createSlice({
   name: "CalendarState",
   reducers: {
-    addSchedule: (state: SliceCalendarState, action: PayloadAction<ActionAddScheduleRequest>) => {
-      console.log("ayaan", action.payload);
+    addSchedule: (state: SliceCalendarState, action: PayloadAction<DispatchActionAddSchedule>) => {
+      state.schedules.push({
+        ...action.payload,
+        uuid: uuid(),
+      });
     },
+    removeSchedule() {},
   },
   initialState,
 });
 
-export { slice as CalendarSlice };
+const actions = slice.actions;
+
+export { slice as CalendarSlice, actions as CalendarActions };

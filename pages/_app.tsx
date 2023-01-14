@@ -5,6 +5,9 @@ import "../styles/globals.css";
 import "antd/dist/reset.css";
 import { ConfigProvider } from "antd";
 import ko_KR from "antd/lib/locale/ko_KR";
+import moment from "moment";
+
+moment.locale("ko");
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
