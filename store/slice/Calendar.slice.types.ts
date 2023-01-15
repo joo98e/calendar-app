@@ -15,5 +15,6 @@ export interface Schedule {
   uuid: string;
   title: string;
   description: string;
+  tagColor: string;
   date: DatePeriod;
 }

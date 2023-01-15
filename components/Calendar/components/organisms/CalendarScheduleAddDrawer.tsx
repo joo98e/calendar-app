@@ -10,6 +10,7 @@ import Typography from "@atoms/Typography";
 import { useAppDispatch } from "@store/index";
 import { CalendarActions } from "@store/slice/Calendar.slice";
 import { DispatchActionAddSchedule } from "@store/slice/Calendar.slice.types";
+import CustomColorPicker from "@components/common/colorPicker/CustomColorPicker";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -50,6 +51,8 @@ interface Props {
 
 const CalendarScheduleAddDrawer = ({ title }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [tagColor, setTagColor] = useState<string>(null);
+
   const dispatch = useAppDispatch();
 
   const {
@@ -143,8 +146,17 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
             </FlexColumn>
           </FormRow>
 
+          <FormRow>
+            <Label>태그 색상</Label>
+            <CustomColorPicker
+              onChangeResult={(value) =>
+                setValue(`tagColor`, `rgba(${value.rgb.r}, ${value.rgb.g}, ${value.rgb.b}, ${value.rgb.a ?? 1})`)
+              }
+            />
+          </FormRow>
+
           <FormRow isNotGrid>
-            <Flex>
+            <Flex justifyContent={"center"} gap={2}>
               <Button onClick={handleSubmit(onValid)}>저장</Button>
               <Button onClick={onDrawerClose}>취소</Button>
             </Flex>
@@ -154,5 +166,4 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
     </Container>
   );
 };
-
 export default CalendarScheduleAddDrawer;

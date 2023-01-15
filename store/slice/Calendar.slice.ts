@@ -10,6 +10,7 @@ const initialState: SliceCalendarState = {
       uuid: "123",
       title: " test",
       description: "test",
+      tagColor: "#d9d9d9",
       date: {
         startDate: "2023-01-14",
         endDate: "2023-01-16",

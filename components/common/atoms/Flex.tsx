@@ -8,6 +8,7 @@ interface IFlex {
 const BaseFlex = styled.div<IFlex>`
   display: flex;
   gap: ${(props) => props.gap}rem;
+  justify-content: ${(props) => (props.justifyContent ? props.justifyContent : "flex-start")};
 `;
 
 export const Flex = styled(BaseFlex)``;
