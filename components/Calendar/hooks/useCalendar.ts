@@ -33,6 +33,8 @@ export default function useCalendar() {
           const daysMonth = Number(days.month() + 1);
 
           return {
+            year: days.year(),
+            month: days.month() + 1,
             d: days.format("dddd"),
             D: Number(days.format("D")),
             thisMonthIs: currentMonth === daysMonth ? "This" : currentMonth > daysMonth ? "Last" : "Next",
@@ -53,16 +55,21 @@ export default function useCalendar() {
     setMoment(currentMoment.clone().add(1, "month"));
   }
 
-  function getScheduleArrayByDate(date: Date, schedules: Schedule[]): string[] {
+  function getScheduleArrayByDate(scheduleDate: Date, schedules: Schedule[]): Schedule[] {
+    if (!schedules.length) return;
+
     let result = [];
-    const criteria = moment(date).format("YYYY-MM-DD");
+    const formattedScheduleDate = moment(scheduleDate).format("YYYY-MM-DD");
 
     schedules.map((schedule) => {
-      for (const dateKey in schedule.date) {
-        if (schedule.date[dateKey] === criteria) {
-          console.log(dateKey, moment().from(schedule.date[dateKey]));
-          result.push(schedule);
-        }
+      const formattedStartDate = moment(schedule.date.startDate).format("YYYY-MM-DD");
+      const formattedEndDate = moment(schedule.date.endDate).format("YYYY-MM-DD");
+
+      const isAfterScheduleStartDate = formattedStartDate <= formattedScheduleDate;
+      const isBeforeScheduleEndDate = formattedEndDate >= formattedScheduleDate;
+
+      if (isAfterScheduleStartDate && isBeforeScheduleEndDate) {
+        result.push(schedule);
       }
     });
 

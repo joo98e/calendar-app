@@ -6,6 +6,7 @@ import { GetWeeksInfoResult, MonthIs } from "@components/Calendar/hooks/types";
 import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms/CalendarScheduleAddDrawer";
 import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
+import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
 
 const Container = styled.div`
   display: flex;
@@ -96,6 +97,7 @@ const Calendar = ({}: Props) => {
 
   const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } =
     useCalendar();
+
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
 
   return (
@@ -116,12 +118,7 @@ const Calendar = ({}: Props) => {
           return (
             <CalendarWeek key={index}>
               {weeks.map((day) => {
-                console.log(
-                  getTodayScheduleArray(
-                    new Date(`${weeksInfo.currentYear}-${weeksInfo.currentMonth}-${day.D}`),
-                    schedules
-                  )
-                );
+                const dailySchedule = getTodayScheduleArray(new Date(`${day.year}-${day.month}-${day.D}`), schedules);
                 return (
                   <CalendarDay
                     key={day.D}
@@ -131,7 +128,10 @@ const Calendar = ({}: Props) => {
                     }}
                   >
                     <Typography size={"1rem"}>{day.D}</Typography>
-                    {}
+                    {dailySchedule.slice(0, 3).map((daily, index) => (
+                      <DailySchedule key={index} dailySchedule={daily} />
+                    ))}
+                    {dailySchedule.length >= 4 && <span>more... </span>}
                   </CalendarDay>
                 );
               })}
@@ -139,10 +139,8 @@ const Calendar = ({}: Props) => {
           );
         })}
       </CalendarBody>
-
-      <CalendarScheduleAddDrawer title={drawerTitle} />
+      <CalendarScheduleAddDrawer title={drawerTitle} />;
     </Container>
   );
 };
-
 export default Calendar;

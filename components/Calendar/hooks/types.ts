@@ -7,6 +7,8 @@ export interface GetWeeksInfoResult {
 export type WeeksInfo = DayInfo[];
 
 interface DayInfo {
+  year: number;
+  month: number;
   d: string;
   D: number;
   thisMonthIs: MonthIs;
