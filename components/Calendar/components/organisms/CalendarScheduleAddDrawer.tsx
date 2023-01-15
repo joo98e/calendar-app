@@ -51,7 +51,6 @@ interface Props {
 
 const CalendarScheduleAddDrawer = ({ title }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [tagColor, setTagColor] = useState<string>(null);
 
   const dispatch = useAppDispatch();
 
@@ -60,11 +59,13 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
     setValue,
     control,
     clearErrors,
+    reset,
     formState: { errors },
   } = useForm<DispatchActionAddSchedule>();
 
   function onDrawerClose() {
     setOpen(false);
+    reset();
   }
 
   function onChangeScheduleRange(scheduleDays: RangePickerProps["value"]) {
@@ -81,6 +82,8 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
 
   function onValid(data: DispatchActionAddSchedule) {
     dispatch(CalendarActions.addSchedule(data));
+    console.log(data);
+    onDrawerClose();
   }
 
   useEffect(() => {
