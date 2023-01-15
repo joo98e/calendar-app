@@ -7,6 +7,7 @@ import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms
 import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
+import { Button } from "antd";
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const Container = styled.div`
 
 const CalendarHeader = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
   font-weight: 700;
@@ -81,12 +82,14 @@ const CalendarDay = styled.div<{
 
 const Paragraph = styled.p`
   font-size: 1rem;
+  line-height: 100%;
+  margin: 0;
 `;
 
-const Button = styled.button`
-  padding: 0.5rem 1rem;
-  box-sizing: border-box;
-  cursor: pointer;
+const MonthTitle = styled(Paragraph)`
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
 `;
 
 interface Props {}
@@ -104,7 +107,7 @@ const Calendar = ({}: Props) => {
     <Container>
       <CalendarHeader>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
-        <Paragraph>{currentMoment.format("YYYY년 MM월")}</Paragraph>
+        <MonthTitle>{currentMoment.format("YYYY년 MM월")}</MonthTitle>
         <Button onClick={handleClickNextMonth}>다음 달</Button>
       </CalendarHeader>
       <CalendarBody>
