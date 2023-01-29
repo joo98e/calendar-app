@@ -29,6 +29,9 @@
       ],
       "@atoms/*": [
         "components/common/atoms/*"
+      ],
+      "@pages/*": [
+        "pages/*"
       ]
     }
   },

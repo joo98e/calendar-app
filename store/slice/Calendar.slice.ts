@@ -8,7 +8,7 @@ const initialState: SliceCalendarState = {
   schedules: [
     {
       uuid: "123",
-      title: " test",
+      title: " goods",
       description: "test",
       tagColor: "#d9d9d9",
       date: {

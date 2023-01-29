@@ -1,4 +1,3 @@
-import { describe } from "@jest/globals";
 import UserService from "../../../api/user/UserService";
 import mockAxiosInstance from "../../__mock__/mockAxiosInstance";
 import { User } from "../../../api/user/types";
