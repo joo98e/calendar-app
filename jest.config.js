@@ -1,15 +1,8 @@
 // /** @type {import("ts-jest/dist/types").InitialOptionsTsJest} */
-// module.exports = {
-//   preset: "ts-jest",
-//   testEnvironment: "node",
-// };
-
 const nextJest = require("next/jest");
-
 const createJestConfig = nextJest({
   dir: "./"
 });
-
 /** @type {import("jest").Config} */
 const customJestConfig = {
   moduleDirectories: ["node_modules", "<rootDir>/"],
@@ -23,7 +16,13 @@ const customJestConfig = {
   },
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }]
+  },
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/test/tsconfig.test.json'
+    }
   }
+
 };
 
 module.exports = createJestConfig(customJestConfig);
