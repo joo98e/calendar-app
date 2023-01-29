@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import useCalendar from "@components/Calendar/hooks/useCalendar";
@@ -8,6 +8,7 @@ import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
 import { Button } from "antd";
+import UserService from "../../../../api/user/UserService";
 
 const Container = styled.div`
   display: flex;
@@ -101,8 +102,16 @@ const Calendar = ({}: Props) => {
   const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } =
     useCalendar();
 
+  async function getAll() {
+    const users = await UserService.findAll();
+    console.log(users);
+  }
+
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
 
+  useEffect(() => {
+    getAll();
+  }, []);
   return (
     <Container>
       <CalendarHeader>

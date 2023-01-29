@@ -1,5 +1,3 @@
-import { DatePeriod, YYYY, MM, DD } from "@components/common/global/types/global";
-
 export type SliceCalendarState = {
   title: string;
   description: string;
