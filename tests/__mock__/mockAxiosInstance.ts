@@ -8,7 +8,7 @@ type PostResponse<T> = CoreResponse<T>;
 type PutResponse<T> = CoreResponse<T>;
 
 
-export default function mockAxiosInstance<T, S, R>(getResponse?: GetResponse<T>, postResponse?: PostResponse<S>, putResponse?: PutResponse<R>) {
+export default function mockAxiosInstance<T = {}, S = {}, R = {}>(getResponse?: GetResponse<T>, postResponse?: PostResponse<S>, putResponse?: PutResponse<R>) {
   axios.create = jest.fn().mockReturnThis();
 
   axios.get.mockResolvedValue(getResponse);
