@@ -1,7 +1,4 @@
-import { Inter } from "@next/font/google";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
-
-const inter = Inter({ subsets: ["latin"] });
+import { GetServerSidePropsContext } from "next";
 
 function Home() {
   return <></>;
@@ -13,7 +10,7 @@ export function getServerSideProps<GetServerSideProps>(context: GetServerSidePro
   return {
     redirect: {
       permanent: true,
-      destination: "/practice",
-    },
+      destination: "/practice"
+    }
   };
 }

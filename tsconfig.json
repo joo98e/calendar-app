@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020",
     "lib": [
       "dom",
       "dom.iterable",
@@ -29,13 +29,17 @@
       ],
       "@atoms/*": [
         "components/common/atoms/*"
+      ],
+      "@pages/*": [
+        "pages/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "components/common/global/types/*.ts"
   ],
   "exclude": [
     "node_modules"
