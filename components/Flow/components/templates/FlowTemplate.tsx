@@ -37,7 +37,7 @@ const FlowTemplate = ({}: Props) => {
   function openNotification() {
     api.open({
       message: "새 노드가 추가되었습니다.",
-      description: "새 노드가 추가되었습니다. 움직이고, 연결해 보세요.",
+      description: "움직이고, 연결해 보세요.",
       style: {
         width: 400,
       },
