@@ -10,7 +10,7 @@ export function getServerSideProps<GetServerSideProps>(context: GetServerSidePro
   return {
     redirect: {
       permanent: true,
-      destination: "/practice"
-    }
+      destination: "/calendar",
+    },
   };
 }

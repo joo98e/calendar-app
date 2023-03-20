@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Calendar from "../../components/Calendar/components/organisms/Calendar";
-import HeadForCalendarPage from "@components/common/head/HeadForCalendarPage";
+import HeadForCalendarPage from "@components/../../common/head/HeadForCalendarPage";
 
 const Container = styled.div`
   min-height: 500px;

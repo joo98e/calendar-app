@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import CustomDrawer from "@components/common/drawer/CustomDrawer";
+import CustomDrawer from "@components/../../../../common/drawer/CustomDrawer";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, DatePicker, Input } from "antd";
@@ -10,7 +10,7 @@ import Typography from "@atoms/Typography";
 import { useAppDispatch } from "@store/index";
 import { CalendarActions } from "@store/slice/Calendar.slice";
 import { DispatchActionAddSchedule } from "@store/slice/Calendar.slice.types";
-import CustomColorPicker from "@components/common/colorPicker/CustomColorPicker";
+import CustomColorPicker from "@components/../../../../common/colorPicker/CustomColorPicker";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
