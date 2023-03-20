@@ -21,12 +21,14 @@ export default function useStageNodeFlow(initialNodes: IStageNode[]) {
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
   function addNewNode(cb: () => void) {
-    const nextId =
-      Math.max.apply(
-        null,
-        nodes.map((node) => node.data.num)
-      ) + 1;
+    const nextId = nodes.length
+      ? Math.max.apply(
+          null,
+          nodes.map((node) => node.data.num)
+        ) + 1
+      : 1;
 
+    console.log(nextId);
     const newNode: IStageNode = {
       id: uuid(),
       type: "SIMPLE_NODE",

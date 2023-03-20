@@ -12,7 +12,14 @@ const Container = styled.div`
   }
 `;
 
-const style: CSSProperties = {
+const leftStyle: CSSProperties = {
+  position: "absolute",
+  top: "50%",
+  left: "-1rem",
+  transform: "translateY(-50%)",
+};
+
+const rightStyle: CSSProperties = {
   position: "absolute",
   top: "50%",
   right: "-1rem",
@@ -22,14 +29,15 @@ const style: CSSProperties = {
 interface Props {
   id: string;
   text: string;
+  onClick: () => void;
 }
 
-const FlowButtonWithHandle = ({ id, text }: Props) => {
+const FlowButtonWithHandle = ({ id, text, onClick }: Props) => {
   return (
     <Container>
-      <Handle id={id} type={"target"} position={Position.Left} style={style} />
-      <Button>{text}</Button>
-      <Handle id={id} type={"source"} position={Position.Right} style={style} />
+      <Handle id={id} type={"target"} position={Position.Left} style={leftStyle} />
+      <Button onClick={onClick}>{text}</Button>
+      <Handle id={id} type={"source"} position={Position.Right} style={rightStyle} />
     </Container>
   );
 };
