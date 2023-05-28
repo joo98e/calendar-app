@@ -1,16 +1,16 @@
 import styled from "@emotion/styled";
-import CustomDrawer from "@components/../../../../common/drawer/CustomDrawer";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, DatePicker, Input } from "antd";
-import { RangePickerProps } from "antd/es/date-picker";
 import { css } from "@emotion/react";
 import { Flex, FlexColumn } from "@atoms/Flex";
 import Typography from "@atoms/Typography";
-import { useAppDispatch } from "@store/index";
 import { CalendarActions } from "@store/slice/Calendar.slice";
-import { DispatchActionAddSchedule } from "@store/slice/Calendar.slice.types";
-import CustomColorPicker from "@components/../../../../common/colorPicker/CustomColorPicker";
+import CustomDrawer from "@common/drawer/CustomDrawer";
+import CustomColorPicker from "@common/colorPicker/CustomColorPicker";
+import { useAppDispatch } from "@store/index";
+import type { RangePickerProps } from "antd/es/date-picker";
+import type { DispatchActionAddSchedule } from "@store/slice/Calendar.slice.types";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -94,13 +94,7 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
 
   return (
     <Container>
-      <CustomDrawer
-        width={800}
-        drawerTitle={Boolean(title) ? title : "제목 없음"}
-        open={open}
-        setOpen={setOpen}
-        onClose={onDrawerClose}
-      >
+      <CustomDrawer width={800} drawerTitle={Boolean(title) ? title : "제목 없음"} open={open} setOpen={setOpen} onClose={onDrawerClose}>
         <FormContainer>
           <FormRow>
             <Label>일정 제목</Label>
@@ -143,18 +137,14 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
                 }}
                 render={({ field: { onChange, value } }) => <TextArea onChange={onChange} value={value} />}
               />
-              {errors?.description?.message && (
-                <Typography variant={"error"}>{errors?.description?.message}</Typography>
-              )}
+              {errors?.description?.message && <Typography variant={"error"}>{errors?.description?.message}</Typography>}
             </FlexColumn>
           </FormRow>
 
           <FormRow>
             <Label>태그 색상</Label>
             <CustomColorPicker
-              onChangeResult={(value) =>
-                setValue(`tagColor`, `rgba(${value.rgb.r}, ${value.rgb.g}, ${value.rgb.b}, ${value.rgb.a ?? 1})`)
-              }
+              onChangeResult={(value) => setValue(`tagColor`, `rgba(${value.rgb.r}, ${value.rgb.g}, ${value.rgb.b}, ${value.rgb.a ?? 1})`)}
             />
           </FormRow>
 

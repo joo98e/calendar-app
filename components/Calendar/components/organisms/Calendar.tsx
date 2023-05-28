@@ -99,8 +99,7 @@ const Calendar = ({}: Props) => {
   const [drawerTitle, setDrawerTitle] = useState<string>("");
   const { schedules } = useAppSelector((state) => state.calendarState);
 
-  const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } =
-    useCalendar();
+  const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } = useCalendar();
 
   async function getAll() {
     const users = await UserService.findAll();
@@ -110,8 +109,9 @@ const Calendar = ({}: Props) => {
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
 
   useEffect(() => {
-    getAll();
+    void getAll();
   }, []);
+
   return (
     <Container>
       <CalendarHeader>

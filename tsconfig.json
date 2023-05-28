@@ -27,8 +27,11 @@
       "@components/*": [
         "components/*"
       ],
+      "@common/*": [
+        "common/*"
+      ],
       "@atoms/*": [
-        "components/common/atoms/*"
+        "common/atoms/*"
       ],
       "@pages/*": [
         "pages/*"
