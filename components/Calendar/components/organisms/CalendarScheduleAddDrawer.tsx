@@ -82,7 +82,6 @@ const CalendarScheduleAddDrawer = ({ title }: Props) => {
 
   function onValid(data: DispatchActionAddSchedule) {
     dispatch(CalendarActions.addSchedule(data));
-    console.log(data);
     onDrawerClose();
   }
 

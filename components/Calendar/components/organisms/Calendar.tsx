@@ -7,10 +7,11 @@ import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms
 import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
-import { Button } from "antd";
+import { Button, Divider } from "antd";
 import UserService from "../../../../api/user/UserService";
 import useDownloadPdf from "@common/helper/exportPdf/useDownloadPdf";
 import usePrintPdf from "@common/helper/exportPdf/usePrintPdf";
+import { PlayCircleOutlined } from "@ant-design/icons";
 
 const Container = styled.div`
   display: flex;
@@ -112,11 +113,15 @@ const Calendar = ({}: Props) => {
 
   const { ref, run } = useDownloadPdf();
   const { printComponentRef, exportPrint } = usePrintPdf<HTMLDivElement>();
+
   const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } = useCalendar();
 
   async function getAll() {
     const users = await UserService.findAll();
-    console.log(users);
+  }
+
+  async function _run() {
+    return run("test.pdf", ref?.current?.innerHTML);
   }
 
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
@@ -126,7 +131,14 @@ const Calendar = ({}: Props) => {
   }, []);
 
   return (
-    <Container ref={printComponentRef}>
+    <Container ref={ref}>
+      <Button onClick={_run}>
+        <PlayCircleOutlined />
+        export
+      </Button>
+
+      <Divider />
+
       <CalendarHeader>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
         <MonthTitle>{currentMoment.format("YYYY년 MM월")}</MonthTitle>
@@ -165,8 +177,6 @@ const Calendar = ({}: Props) => {
         })}
       </CalendarBody>
       <CalendarScheduleAddDrawer title={drawerTitle} />
-
-      <Button onClick={exportPrint}>추력</Button>
     </Container>
   );
 };

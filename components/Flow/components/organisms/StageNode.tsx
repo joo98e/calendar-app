@@ -6,9 +6,7 @@ import { NodeProps } from "@reactflow/core/dist/esm/types/nodes";
 import { IStageNode } from "@components/Flow/hooks/types";
 
 function Simple(props: NodeProps<IStageNode>) {
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
+  const onChange = useCallback((evt) => {}, []);
 
   return (
     <Card title={"Node"} style={{ width: 300 }}>

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useRef } from "react";
-import type { ExportPdfRequestType } from "@api/export/pdf";
 
 export default function useDownloadPdf() {
   const ref = useRef<HTMLDivElement>();
@@ -9,13 +8,21 @@ export default function useDownloadPdf() {
     headers: {},
   });
 
-  async function run(data: ExportPdfRequestType) {
+  async function run(filename: string, content: string) {
     try {
-      const res = await localInstance.post<Blob>(END_POINT, data, {
-        responseType: "blob",
-      });
+      const res = await localInstance.post<Blob>(
+        END_POINT,
+        {
+          filename: filename,
+          content: content,
+          styleContent: copyStyle(),
+        },
+        {
+          responseType: "blob",
+        }
+      );
 
-      await downloadBlobData(data.filename, res.data);
+      await downloadBlobData(filename, res.data);
     } catch (e) {
       console.log(e);
     }
@@ -33,6 +40,18 @@ export default function useDownloadPdf() {
     link.parentNode.removeChild(link);
 
     window.URL.revokeObjectURL(blobUrl);
+  }
+
+  function copyStyle() {
+    let result = "";
+    const TOP = window.top;
+    const linkStyles = TOP.document.querySelectorAll("style");
+
+    linkStyles.forEach((style) => {
+      result += style.innerHTML;
+    });
+
+    return result;
   }
 
   return {
