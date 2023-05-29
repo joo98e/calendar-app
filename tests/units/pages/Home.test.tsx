@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Home from "@pages/index";
+import Home from "../../../pages/index";
 import { renderWithProviders } from "../../__mock__/renderWithProvider";
 
 describe("redirect", () => {

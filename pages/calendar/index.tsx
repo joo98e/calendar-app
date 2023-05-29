@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import Calendar from "../../components/Calendar/components/organisms/Calendar";
+import Calendar from "@components/Calendar/components/organisms/Calendar";
 import HeadForCalendarPage from "@components/../../common/head/HeadForCalendarPage";
 
 const Container = styled.div`
