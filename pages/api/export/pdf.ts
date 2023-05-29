@@ -1,16 +1,56 @@
 import puppeteer from "puppeteer";
+import fs from "fs";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-async function handler(req, res) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+type HTMLToString = string;
 
-  await page.goto("http://localhost:3000/export/pdf");
-  await page.emulateMediaType("screen");
-
-  const pdfBuffer = await page.pdf({ format: "A4" });
-
-  res.send(pdfBuffer);
-  await browser.close();
+export interface ExportPdfRequestType {
+  filename: `${string}.pdf`;
+  content: HTMLToString;
 }
 
-export default handler;
+export default async function exportPdfHandler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(404).send({
+      message: "this method is not allowed.",
+    });
+  }
+
+  const { filename, content } = req.body as ExportPdfRequestType;
+  if (!filename || !content) {
+    return res.status(400).send({
+      message: "잘못된 인수입니다.",
+    });
+  }
+
+  const browser = await puppeteer.launch({
+    headless: "new",
+  });
+
+  const page = await browser.newPage();
+  await page.emulateMediaType("screen");
+  await page.goto("http://localhost:3000/calendar");
+
+  await page.setContent(
+    `
+      ${content}
+    `,
+    {
+      waitUntil: "load",
+      timeout: 5000,
+    }
+  );
+
+  const pdfBuffer = await page.pdf({
+    format: "A4",
+    margin: {
+      top: 16,
+      bottom: 16,
+    },
+    printBackground: true,
+  });
+
+  await page.close();
+
+  return res.send(pdfBuffer);
+}

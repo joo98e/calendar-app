@@ -1,25 +1,28 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 
 interface Props<T> {}
 
 interface UseExportPdfReturn<T> {
-  ref: MutableRefObject<T>;
+  printComponentRef: MutableRefObject<T>;
   exportPrint: () => void;
 }
 
-export default function useExportPdf<T extends HTMLElement>(): UseExportPdfReturn<T> {
-  const ref = useRef<T>();
-  const withInitialStyleRef = useRef<HTMLStyleElement>();
+export default function usePrintPdf<T extends HTMLElement>(): UseExportPdfReturn<T> {
+  const printComponentRef = useRef<T>();
 
-  function exportPrint() {
-    if (!ref) return;
+  function printPage() {
+    if (!printComponentRef) return;
 
-    const printArea = ref.current;
+    const printArea = printComponentRef.current;
     const newIframe = document.createElement("iframe");
     newIframe.id = "print-frame";
     newIframe.style.display = "none";
     newIframe.onload = () => {
       const iFrameWindow: Window = newIframe.contentWindow;
+
+      iFrameWindow.document.body.style.padding = "1.6cm";
+      iFrameWindow.document.body.style.boxSizing = "border-box";
+
       new Promise((resolve, reject) => {
         try {
           copyStyle(iFrameWindow);
@@ -40,24 +43,23 @@ export default function useExportPdf<T extends HTMLElement>(): UseExportPdfRetur
   function copyStyle(newWindow: Window) {
     const TOP = window.top;
     const linkStyles = TOP.document.querySelectorAll("style");
+    const defaultStyle = document.createElement("style");
+    defaultStyle.innerHTML = `
+      @media print {
+        @page { margin: 1.6cm; }
+        body { margin: 1.6cm; }
+      }
+    `;
 
+    newWindow.document.head.appendChild(defaultStyle);
     linkStyles.forEach((style) => {
       const cloneStyle = style.cloneNode(true);
       newWindow.document.head.appendChild(cloneStyle);
     });
   }
 
-  useEffect(() => {
-    if (!ref.current) return;
-
-    // @media print {
-    //   @page { margin: 0; }
-    //     body { margin: 1.6cm; }
-    //   }
-  }, [ref?.current]);
-
   return {
-    ref: ref,
-    exportPrint: exportPrint,
+    printComponentRef: printComponentRef,
+    exportPrint: printPage,
   };
 }

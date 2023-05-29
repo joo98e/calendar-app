@@ -9,7 +9,8 @@ import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
 import { Button } from "antd";
 import UserService from "../../../../api/user/UserService";
-import useExportPdf from "@common/helper/exportPdf/useExportPdf";
+import useDownloadPdf from "@common/helper/exportPdf/useDownloadPdf";
+import usePrintPdf from "@common/helper/exportPdf/usePrintPdf";
 
 const Container = styled.div`
   display: flex;
@@ -109,17 +110,13 @@ const Calendar = ({}: Props) => {
   const [drawerTitle, setDrawerTitle] = useState<string>("");
   const { schedules } = useAppSelector((state) => state.calendarState);
 
+  const { ref, run } = useDownloadPdf();
+  const { printComponentRef, exportPrint } = usePrintPdf<HTMLDivElement>();
   const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } = useCalendar();
-
-  const { ref, exportPrint } = useExportPdf<HTMLDivElement>();
 
   async function getAll() {
     const users = await UserService.findAll();
-  }
-
-  async function testPdf() {
-    const result = await fetch("/api/export/pdf");
-    console.log(result);
+    console.log(users);
   }
 
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
@@ -129,13 +126,7 @@ const Calendar = ({}: Props) => {
   }, []);
 
   return (
-    <Container ref={ref}>
-      <Button type={"primary"} onClick={testPdf}>
-        generatePdf
-      </Button>
-      <a href="/api/export/pdf" download="generated_pdf.pdf" className="downloadBtn">
-        Download PDF
-      </a>
+    <Container ref={printComponentRef}>
       <CalendarHeader>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
         <MonthTitle>{currentMoment.format("YYYY년 MM월")}</MonthTitle>
@@ -173,7 +164,9 @@ const Calendar = ({}: Props) => {
           );
         })}
       </CalendarBody>
-      <CalendarScheduleAddDrawer title={drawerTitle} />;
+      <CalendarScheduleAddDrawer title={drawerTitle} />
+
+      <Button onClick={exportPrint}>추력</Button>
     </Container>
   );
 };

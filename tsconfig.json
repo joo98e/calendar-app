@@ -33,6 +33,9 @@
       "@atoms/*": [
         "common/atoms/*"
       ],
+      "@api/*": [
+        "pages/api/*"
+      ],
       "@pages/*": [
         "pages/*"
       ]
