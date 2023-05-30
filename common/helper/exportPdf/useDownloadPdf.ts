@@ -10,7 +10,7 @@ export default function useDownloadPdf() {
 
   async function run(filename: string, content: string) {
     try {
-      const res = await localInstance.post<Blob>(
+      const res = await localInstance.post<ArrayBuffer>(
         END_POINT,
         {
           filename: filename,
@@ -22,7 +22,8 @@ export default function useDownloadPdf() {
         }
       );
 
-      await downloadBlobData(filename, res.data);
+      const blob = new Blob([res.data]);
+      await downloadBlobData(filename, blob);
     } catch (e) {
       console.log(e);
     }

@@ -24,43 +24,89 @@ export default async function exportPdfHandler(req: NextApiRequest, res: NextApi
     });
   }
 
+  const htmlContents = ["<div>page 1</div>", "<div>page 2</div>", "<div>page 3</div>"];
+
   const browser = await puppeteer.launch({
     headless: "new",
   });
 
   const page = await browser.newPage();
-  await page.emulateMediaType("screen");
 
   await page.setContent(
-    `
-      ${content}
-    `,
-    {
-      waitUntil: "load",
-      timeout: 5000,
-    }
+    getHTMLTemplate({
+      components: htmlContents,
+    }),
+    { waitUntil: ["domcontentloaded", "networkidle0"] }
   );
-
-  await page.addStyleTag({
-    content: `
-      padding : 16px;
-      box-sizing: border-box;
-    
-      ${styleContent}
-    `,
-  });
 
   const pdfBuffer = await page.pdf({
     format: "A4",
-    margin: {
-      top: 32,
-      bottom: 32,
-      left: 32,
-      right: 32,
-    },
   });
 
-  await page.close();
+  await browser.close();
 
   return res.send(pdfBuffer);
+}
+
+interface GetHTMLTemplateProps {
+  components: string[];
+  style?: string;
+}
+
+function getHTMLTemplate({ components = [], style = "" }: GetHTMLTemplateProps) {
+  let result = "";
+
+  components.forEach(
+    (component) =>
+      (result += `
+    <div class="page break">
+        ${component}
+    </div>
+  `)
+  );
+
+  return `
+        <!DOCTYPE html>
+        <html lang="ko">
+            <head>
+                <meta charset="utf-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <title>HTML to PDF Example</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>
+                    * {margin: 0; padding: 0; border-spacing: 0;}
+
+                    .page {
+                        width: 210mm;
+                        height: auto;
+                        overflow: hidden;
+                        background: transparent;
+                        margin-top: -1px !important;
+                        margin-bottom: -1px !important;
+                    }
+                    
+                    @page {
+                        size: A4;
+                        margin: 16px;
+                    }
+                    
+                    @media print {
+                        .break::after {
+                            content: ''; 
+                            display: block;
+                            page-break-after: always;
+                            page-break-inside: avoid;
+                            page-break-before: avoid;        
+                        }
+                    }
+                    
+                    ${style}
+                    
+                </style>
+            </head>
+            <body>
+                ${result}
+            </body>
+        </html>
+    `;
 }
