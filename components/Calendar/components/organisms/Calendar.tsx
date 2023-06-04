@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import useCalendar from "@components/Calendar/hooks/useCalendar";
@@ -7,11 +7,13 @@ import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms
 import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
-import { Button, Divider } from "antd";
+import { Button, Divider, Table } from "antd";
 import UserService from "../../../../api/user/UserService";
 import useDownloadPdf from "@common/helper/exportPdf/useDownloadPdf";
 import usePrintPdf from "@common/helper/exportPdf/usePrintPdf";
 import { PlayCircleOutlined } from "@ant-design/icons";
+import ButtonGroup from "antd/lib/button/button-group";
+import TempTable from "@components/table/components/templates/TempTable";
 
 const Container = styled.div`
   display: flex;
@@ -108,11 +110,15 @@ const MonthTitle = styled(Paragraph)`
 interface Props {}
 
 const Calendar = ({}: Props) => {
+  const printObject = useRef<HTMLDivElement>(null);
+  const printObject2 = useRef<HTMLDivElement>(null);
+  const printObject3 = useRef<HTMLDivElement>(null);
+
   const [drawerTitle, setDrawerTitle] = useState<string>("");
   const { schedules } = useAppSelector((state) => state.calendarState);
 
-  const { ref, run } = useDownloadPdf();
-  const { printComponentRef, exportPrint } = usePrintPdf<HTMLDivElement>();
+  const { download } = useDownloadPdf();
+  const { printComponentRef, print } = usePrintPdf<HTMLDivElement>();
 
   const { currentMoment, getWeeksInfo, handleClickPrevMonth, handleClickNextMonth, getTodayScheduleArray } = useCalendar();
 
@@ -121,7 +127,10 @@ const Calendar = ({}: Props) => {
   }
 
   async function _run() {
-    return run("test.pdf", ref?.current?.innerHTML);
+    try {
+      await download("test.pdf", [printObject, printObject2, printObject3]);
+    } catch (e) {}
+    return;
   }
 
   const weeksInfo: GetWeeksInfoResult = getWeeksInfo();
@@ -131,20 +140,29 @@ const Calendar = ({}: Props) => {
   }, []);
 
   return (
-    <Container ref={ref}>
-      <Button onClick={_run}>
-        <PlayCircleOutlined />
-        export
-      </Button>
+    <Container ref={printComponentRef}>
+      <ButtonGroup size={"middle"}>
+        <Button onClick={_run}>
+          <PlayCircleOutlined />
+          export
+        </Button>
+        <Button onClick={print}>
+          <PlayCircleOutlined />
+          print
+        </Button>
+      </ButtonGroup>
+
+      <Divider />
+      <TempTable />
 
       <Divider />
 
-      <CalendarHeader>
+      <CalendarHeader ref={printObject}>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
         <MonthTitle>{currentMoment.format("YYYY년 MM월")}</MonthTitle>
         <Button onClick={handleClickNextMonth}>다음 달</Button>
       </CalendarHeader>
-      <CalendarBody>
+      <CalendarBody ref={printObject2}>
         <CalendarBodyHeader>
           {["일", "월", "화", "수", "목", "금", "토"].map((dddd, index) => (
             <Paragraph key={index}>{dddd}</Paragraph>
@@ -176,6 +194,9 @@ const Calendar = ({}: Props) => {
           );
         })}
       </CalendarBody>
+
+      <div ref={printObject3}>test</div>
+
       <CalendarScheduleAddDrawer title={drawerTitle} />
     </Container>
   );

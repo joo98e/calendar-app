@@ -1,29 +1,30 @@
 import axios from "axios";
-import { useRef } from "react";
+import { MutableRefObject } from "react";
+import { ExportPdfRequestType } from "@api/export/pdf";
 
 export default function useDownloadPdf() {
-  const ref = useRef<HTMLDivElement>();
   const END_POINT = "/api/export/pdf" as const;
   const localInstance = axios.create({
     headers: {},
   });
 
-  async function run(filename: string, content: string) {
+  async function download(pdfFilename: `${string}.pdf`, mutableReferences: MutableRefObject<HTMLElement | null>[]) {
+    if (mutableReferences.some((ref) => !ref)) throw Error("PDF 다운로드에 실패했습니다.");
+
+    const contents = mutableReferences.map((ref) => ref?.current?.outerHTML);
+
     try {
-      const res = await localInstance.post<ArrayBuffer>(
-        END_POINT,
-        {
-          filename: filename,
-          content: content,
-          styleContent: copyStyle(),
-        },
-        {
-          responseType: "blob",
-        }
-      );
+      const data: ExportPdfRequestType = {
+        contents: contents,
+        styles: copyStyle(),
+      };
+
+      const res = await localInstance.post<ArrayBuffer>(END_POINT, data, {
+        responseType: "blob",
+      });
 
       const blob = new Blob([res.data]);
-      await downloadBlobData(filename, blob);
+      await downloadBlobData(pdfFilename, blob);
     } catch (e) {
       console.log(e);
     }
@@ -45,10 +46,12 @@ export default function useDownloadPdf() {
 
   function copyStyle() {
     let result = "";
-    const TOP = window.top;
-    const linkStyles = TOP.document.querySelectorAll("style");
+    const linkStyles = top.document.querySelectorAll("style");
+
+    const ignoreLinkSources = ["globals.css", "style.css", "reset.css"];
 
     linkStyles.forEach((style) => {
+      if (ignoreLinkSources.includes(style.outerHTML)) return;
       result += style.innerHTML;
     });
 
@@ -56,7 +59,6 @@ export default function useDownloadPdf() {
   }
 
   return {
-    ref: ref,
-    run: run,
+    download: download,
   };
 }

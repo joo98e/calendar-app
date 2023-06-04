@@ -2,29 +2,26 @@ import puppeteer from "puppeteer";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type HTMLToString = string;
-type HTMLStyleToString = string;
+type CSSToString = string;
 
 export interface ExportPdfRequestType {
-  filename: `${string}.pdf`;
-  content: HTMLToString;
-  styleContent: HTMLStyleToString;
+  contents: HTMLToString[];
+  styles: CSSToString;
 }
 
 export default async function exportPdfHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return res.status(404).send({
+    return res.status(405).send({
       message: "this method is not allowed.",
     });
   }
 
-  const { filename, content, styleContent } = req.body as ExportPdfRequestType;
-  if (!filename || !content) {
+  const { contents, styles } = req.body as ExportPdfRequestType;
+  if (!contents) {
     return res.status(400).send({
       message: "잘못된 인수입니다.",
     });
   }
-
-  const htmlContents = ["<div>page 1</div>", "<div>page 2</div>", "<div>page 3</div>"];
 
   const browser = await puppeteer.launch({
     headless: "new",
@@ -32,15 +29,20 @@ export default async function exportPdfHandler(req: NextApiRequest, res: NextApi
 
   const page = await browser.newPage();
 
-  await page.setContent(
-    getHTMLTemplate({
-      components: htmlContents,
-    }),
-    { waitUntil: ["domcontentloaded", "networkidle0"] }
-  );
+  const html = getHTMLTemplate({
+    contents: contents,
+    styles: styles,
+  });
+
+  await page.setContent(html, { waitUntil: ["domcontentloaded", "networkidle0"] });
 
   const pdfBuffer = await page.pdf({
     format: "A4",
+    headerTemplate: "<div style='color:red; font-size:24px;'>header</div>",
+    footerTemplate: "<div style='color:red; font-size:24px;'>footer</div>",
+    displayHeaderFooter: true,
+    preferCSSPageSize: true,
+    printBackground: true,
   });
 
   await browser.close();
@@ -49,19 +51,26 @@ export default async function exportPdfHandler(req: NextApiRequest, res: NextApi
 }
 
 interface GetHTMLTemplateProps {
-  components: string[];
-  style?: string;
+  contents: string[];
+  styles?: string;
 }
 
-function getHTMLTemplate({ components = [], style = "" }: GetHTMLTemplateProps) {
+interface GetHTMLTemplateProps {
+  contents: string[];
+  styles?: string;
+}
+
+function getHTMLTemplate({ contents = [], styles = "" }: GetHTMLTemplateProps) {
   let result = "";
 
-  components.forEach(
+  contents.forEach(
     (component) =>
       (result += `
-    <div class="page break">
-        ${component}
-    </div>
+      <main>
+        <div class="page print-break">
+          ${component}
+        </div>
+      </main>      
   `)
   );
 
@@ -74,8 +83,20 @@ function getHTMLTemplate({ components = [], style = "" }: GetHTMLTemplateProps) 
                 <title>HTML to PDF Example</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <style>
-                    * {margin: 0; padding: 0; border-spacing: 0;}
-
+                  ${styles}
+                </style>
+                <style>
+                
+                    * {margin: 0; padding: 0; border-spacing: 0; page-break-after: inherit; page-break-inside: inherit; page-break-before: inherit;}
+                    html, body {
+                      width:auto;
+                      height:auto;
+                    }
+                    
+                    main {
+                      margin: 24px 0;
+                    }
+                    
                     .page {
                         width: 210mm;
                         height: auto;
@@ -91,7 +112,7 @@ function getHTMLTemplate({ components = [], style = "" }: GetHTMLTemplateProps) 
                     }
                     
                     @media print {
-                        .break::after {
+                        .print-break::after {
                             content: ''; 
                             display: block;
                             page-break-after: always;
@@ -99,13 +120,10 @@ function getHTMLTemplate({ components = [], style = "" }: GetHTMLTemplateProps) 
                             page-break-before: avoid;        
                         }
                     }
-                    
-                    ${style}
-                    
                 </style>
             </head>
             <body>
-                ${result}
+              ${result}
             </body>
         </html>
     `;

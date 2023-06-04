@@ -4,7 +4,7 @@ interface Props<T> {}
 
 interface UseExportPdfReturn<T> {
   printComponentRef: MutableRefObject<T>;
-  exportPrint: () => void;
+  print: () => void;
 }
 
 export default function usePrintPdf<T extends HTMLElement>(): UseExportPdfReturn<T> {
@@ -60,6 +60,6 @@ export default function usePrintPdf<T extends HTMLElement>(): UseExportPdfReturn
 
   return {
     printComponentRef: printComponentRef,
-    exportPrint: printPage,
+    print: printPage,
   };
 }
