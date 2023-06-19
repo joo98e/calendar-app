@@ -7,7 +7,7 @@ import CalendarScheduleAddDrawer from "@components/Calendar/components/organisms
 import { useAppSelector } from "@store/index";
 import Typography from "@atoms/Typography";
 import DailySchedule from "@components/Calendar/components/molecules/DailySchedule";
-import { Button, Divider, Table } from "antd";
+import { Button, Divider } from "antd";
 import UserService from "../../../../api/user/UserService";
 import useDownloadPdf from "@common/helper/exportPdf/useDownloadPdf";
 import usePrintPdf from "@common/helper/exportPdf/usePrintPdf";
@@ -110,9 +110,7 @@ const MonthTitle = styled(Paragraph)`
 interface Props {}
 
 const Calendar = ({}: Props) => {
-  const printObject = useRef<HTMLDivElement>(null);
   const printObject2 = useRef<HTMLDivElement>(null);
-  const printObject3 = useRef<HTMLDivElement>(null);
 
   const [drawerTitle, setDrawerTitle] = useState<string>("");
   const { schedules } = useAppSelector((state) => state.calendarState);
@@ -128,7 +126,7 @@ const Calendar = ({}: Props) => {
 
   async function _run() {
     try {
-      await download("test.pdf", [printObject, printObject2, printObject3]);
+      await download("test.pdf", [printObject2]);
     } catch (e) {}
     return;
   }
@@ -157,45 +155,74 @@ const Calendar = ({}: Props) => {
 
       <Divider />
 
-      <CalendarHeader ref={printObject}>
+      <CalendarHeader>
         <Button onClick={handleClickPrevMonth}>이전 달</Button>
         <MonthTitle>{currentMoment.format("YYYY년 MM월")}</MonthTitle>
         <Button onClick={handleClickNextMonth}>다음 달</Button>
       </CalendarHeader>
       <CalendarBody ref={printObject2}>
-        <CalendarBodyHeader>
-          {["일", "월", "화", "수", "목", "금", "토"].map((dddd, index) => (
-            <Paragraph key={index}>{dddd}</Paragraph>
-          ))}
-        </CalendarBodyHeader>
+        <div className={"print1"}>
+          <div className={"print2"}>
+            <div className={"print3"}>
+              <CalendarBodyHeader>
+                {["일", "월", "화", "수", "목", "금", "토"].map((dddd, index) => (
+                  <Paragraph key={index}>{dddd}</Paragraph>
+                ))}
+              </CalendarBodyHeader>
 
-        {weeksInfo.weeks.map((weeks, index) => {
-          return (
-            <CalendarWeek key={index}>
-              {weeks.map((day) => {
-                const dailySchedule = getTodayScheduleArray(new Date(`${day.year}-${day.month}-${day.D}`), schedules);
+              {weeksInfo.weeks.map((weeks, index) => {
                 return (
-                  <CalendarDay
-                    key={day.D}
-                    thisMonthIs={day.thisMonthIs}
-                    onClick={() => {
-                      setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`);
-                    }}
-                  >
-                    <Typography size={"1rem"}>{day.D}</Typography>
-                    {dailySchedule.slice(0, 3).map((daily, index) => (
-                      <DailySchedule key={index} dailySchedule={daily} />
-                    ))}
-                    {dailySchedule.length >= 4 && <span>more... </span>}
-                  </CalendarDay>
+                  <CalendarWeek key={index}>
+                    {weeks.map((day) => {
+                      const dailySchedule = getTodayScheduleArray(new Date(`${day.year}-${day.month}-${day.D}`), schedules);
+                      return (
+                        <CalendarDay
+                          key={day.D}
+                          thisMonthIs={day.thisMonthIs}
+                          onClick={() => {
+                            setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`);
+                          }}
+                        >
+                          <Typography size={"1rem"}>{day.D}</Typography>
+                          {dailySchedule.slice(0, 3).map((daily, index) => (
+                            <DailySchedule key={index} dailySchedule={daily} />
+                          ))}
+                          {dailySchedule.length >= 4 && <span>more... </span>}
+                        </CalendarDay>
+                      );
+                    })}
+                  </CalendarWeek>
                 );
               })}
-            </CalendarWeek>
-          );
-        })}
-      </CalendarBody>
 
-      <div ref={printObject3}>test</div>
+              {weeksInfo.weeks.reverse().map((weeks, index) => {
+                return (
+                  <CalendarWeek key={index}>
+                    {weeks.map((day) => {
+                      const dailySchedule = getTodayScheduleArray(new Date(`${day.year}-${day.month}-${day.D}`), schedules);
+                      return (
+                        <CalendarDay
+                          key={day.D}
+                          thisMonthIs={day.thisMonthIs}
+                          onClick={() => {
+                            setDrawerTitle(`${weeksInfo.currentYear}년 ${weeksInfo.currentMonth}월 ${day.D}일`);
+                          }}
+                        >
+                          <Typography size={"1rem"}>{day.D}</Typography>
+                          {dailySchedule.slice(0, 3).map((daily, index) => (
+                            <DailySchedule key={index} dailySchedule={daily} />
+                          ))}
+                          {dailySchedule.length >= 4 && <span>more... </span>}
+                        </CalendarDay>
+                      );
+                    })}
+                  </CalendarWeek>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </CalendarBody>
 
       <CalendarScheduleAddDrawer title={drawerTitle} />
     </Container>
